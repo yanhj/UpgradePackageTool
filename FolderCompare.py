@@ -35,18 +35,17 @@ class FolderCompare:
         file_names = os.listdir(directory)
 
         #去除隐藏文件
-        for i in file_names:
-            if i.startswith('.'):
-                file_names.remove(i)
-
+        #过滤掉/Applications 文件夹
+        filter_names = [item for item in file_names if not (item.startswith('.') or item == 'Applications')]
+        
         #递归遍历所有文件夹
-        for i in range(len(file_names)):
-            file_names[i] = os.path.join(directory, file_names[i])
-            if os.path.isdir(file_names[i]):
-                file_names.extend(self.getFileList(file_names[i]))
+        for i in range(len(filter_names)):
+            filter_names[i] = os.path.join(directory, filter_names[i])
+            if os.path.isdir(filter_names[i]):
+                filter_names.extend(self.getFileList(filter_names[i]))
 
         # 使用 os.path.join 获取文件的绝对路径
-        absolute_paths = [os.path.join(directory, file_name) for file_name in file_names]
+        absolute_paths = [os.path.join(directory, file_name) for file_name in filter_names]
 
         # 过滤出只是文件而不是文件夹的路径
         absolute_file_paths = [path for path in absolute_paths if os.path.isfile(path)]
@@ -139,7 +138,10 @@ if __name__ == '__main__':
     args = sys.argv
     if len(args) != 4:
         print('Usage: python FolderCompare.py oldPath newPath exportPath')
-        sys.exit(1)
+        #sys.exit(1)
+        args.append('/Users/yanhuajian/WorkSpace/git/UpgradePackageTool/build/mount/previous/vidme/')
+        args.append('/Users/yanhuajian/WorkSpace/git/UpgradePackageTool/build/mount/current/vidme/')
+        args.append('/Users/yanhuajian/WorkSpace/git/UpgradePackageTool/build/diff/')
     
     previous_path = args[1]
     current_path = args[2]
