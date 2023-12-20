@@ -178,13 +178,12 @@ class builder:
 
     def clear(self):
         #清理
-        #清理 export 文件夹
-        if os.path.exists(self.export_path):
-            shutil.rmtree(self.export_path)
-            pass
         #清理 package 文件夹
         if os.path.exists(self.package_path):
             shutil.rmtree(self.package_path)
+        #清理 export 文件夹
+        if os.path.exists(self.export_path):
+            shutil.rmtree(self.export_path)
         #清理 previous 文件夹
         if os.path.exists(self.previous):
             shutil.rmtree(self.previous)

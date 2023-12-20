@@ -47,8 +47,8 @@
                 {
                     "type": "diff",
                     "description": "配置差异版本的信息",
-                    "push_url": "http://share.mtlab.meitu.com/share/MCP-beta/VidMeCreator/",
-                    "version": "/VidMeCreator/1.0.2/Beta/10/win/",
+                    "push_url": "/VidMeCreator/1.0.2/Beta/10/win/",
+                    "version": "",
                     "package_name": "VidMeCreator_win_diff.zip"
                 }
             ]
