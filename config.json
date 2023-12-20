@@ -2,25 +2,60 @@
     "version": "1.0.0",
     "params": [
         {
-            "type": "previous",
-            "description": "配置上一个版本的信息",
-            "pull_url": "http://share.mtlab.meitu.com/share/MCP-beta/vidme-release/1.0.2-Beta-9/mac/VidMeCreator_universal.dmg",
-            "version": "1.0.2-Beta-8",
-            "package_name": "VidMeCreator_universal.dmg"
+            "platform": "mac",
+            "packages": [
+                {
+                    "type": "previous",
+                    "description": "配置上一个版本的信息",
+                    "pull_url": "http://share.mtlab.meitu.com/share/MCP-beta/vidme-release/1.0.2-Beta-9/mac/VidMeCreator_universal.dmg",
+                    "version": "1.0.2-Beta-8",
+                    "package_name": "VidMeCreator_universal.dmg"
+                },
+                {
+                    "type": "current",
+                    "description": "配置当前版本的信息",
+                    "pull_url": "http://share.mtlab.meitu.com/share/MCP-beta/vidme-release/1.0.2-Beta-10/mac/VidMeCreator_universal.dmg",
+                    "version": "1.0.2-Beta-10",
+                    "package_name": "VidMeCreator_universal.dmg"
+                },
+                {
+                    "type": "diff",
+                    "description": "配置差异版本的信息",
+                    "push_url": "http://share.mtlab.meitu.com/share/MCP-beta/vidme-release/",
+                    "version": "1.0.2-Beta-8~1.0.2-Beta-10",
+                    "package_name": "VidMeCreator_universal_diff.zip"
+                }
+            ]
         },
         {
-            "type": "current",
-            "description": "配置当前版本的信息",
-            "pull_url": "http://share.mtlab.meitu.com/share/MCP-beta/vidme-release/1.0.2-Beta-10/mac/VidMeCreator_universal.dmg",
-            "version": "1.0.2-Beta-10",
-            "package_name": "VidMeCreator_universal.dmg"
+            "platform": "win",
+            "packages": [
+                {
+                    "type": "previous",
+                    "description": "配置上一个版本的信息",
+                    "pull_url": "http://share.mtlab.meitu.com/share/MCP-beta/vidme-release/1.0.2-Beta-9/win/VidMeCreator.zip",
+                    "version": "1.0.2-Beta-8",
+                    "package_name": "VidMeCreator_win.zip"
+                },
+                {
+                    "type": "current",
+                    "description": "配置当前版本的信息",
+                    "pull_url": "http://share.mtlab.meitu.com/share/MCP-beta/vidme-release/1.0.2-Beta-10/win/VidMeCreator.zip",
+                    "version": "1.0.2-Beta-10",
+                    "package_name": "VidMeCreator_win.zip"
+                },
+                {
+                    "type": "diff",
+                    "description": "配置差异版本的信息",
+                    "push_url": "http://share.mtlab.meitu.com/share/MCP-beta/vidme-release/",
+                    "version": "1.0.2-Beta-8~1.0.2-Beta-10",
+                    "package_name": "VidMeCreator_win_diff.zip"
+                }
+            ]
         },
         {
-            "type": "diff",
-            "description": "配置差异版本的信息",
-            "push_url": "http://share.mtlab.meitu.com/share/MCP-beta/vidme-release/",
-            "version": "1.0.2-Beta-8~1.0.2-Beta-10",
-            "package_name": "VidMeCreator_universal_diff.zip"
+            "platform": "linux",
+            "packages": []
         }
     ]
 }

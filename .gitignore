@@ -2,3 +2,4 @@ build/
 .idea/
 output/
 .vscode/
+__pycache__/

@@ -46,25 +46,61 @@ class builder:
         
         #如果是dmg文件，挂载
         if previous_file.endswith(".dmg"):
-            if not os.path.exists(self.mount_path_previous):
-                os.makedirs(self.mount_path_previous)
-            #挂载 previous 版本包
-            previous_mount_path=self.mount_path_previous
-            if not os.path.exists(previous_mount_path):
-                os.makedirs(previous_mount_path)
-            self.previousDmgHelper=DmgHelper(previous_file, previous_mount_path)
-            self.previousDmgHelper.mount()
-            #挂载 current 版本包
-            if not os.path.exists(self.mount_path_current):
-                os.makedirs(self.mount_path_current)
-            current_mount_path=self.mount_path_current
-            if not os.path.exists(current_mount_path):
-                os.makedirs(current_mount_path)
-            self.currentDmgHelper=DmgHelper(current_file, current_mount_path)
-            self.currentDmgHelper.mount()
+            return self._mount_dmg(previous_file, current_file)
+        elif previous_file.endswith(".zip"):
+            return self._unzip(previous_file, current_file)
+        elif previous_file.endswith(".exe"):
+            return self._mount_exe(previous_file, current_file)
         
+        return False 
+    
+    def _mount_dmg(self, previous_file, current_file):
+        #挂载 previous 版本包
+        if not os.path.exists(self.mount_path_previous):
+            os.makedirs(self.mount_path_previous)
+        previous_mount_path=self.mount_path_previous
+        if not os.path.exists(previous_mount_path):
+            os.makedirs(previous_mount_path)
+        self.previousDmgHelper=DmgHelper(previous_file, previous_mount_path)
+        self.previousDmgHelper.mount()
+        
+        #挂载 current 版本包
+        if not os.path.exists(self.mount_path_current):
+            os.makedirs(self.mount_path_current)
+        current_mount_path=self.mount_path_current
+        if not os.path.exists(current_mount_path):
+            os.makedirs(current_mount_path)
+        self.currentDmgHelper=DmgHelper(current_file, current_mount_path)
+        self.currentDmgHelper.mount()
         return True
     
+    #解压 zip 文件
+    def _unzip(self, previous_file, current_file):
+        #解压 previous 版本包
+        ZipBuilder(previous_file).decompress(self.mount_path_previous)
+        #解压 current 版本包
+        ZipBuilder(current_file).decompress(self.mount_path_current)
+        return True
+    
+    #挂载 exe 文件
+    def _mount_exe(self, previous_file, current_file):
+        #挂载 previous 版本包
+        if not os.path.exists(self.mount_path_previous):
+            os.makedirs(self.mount_path_previous)
+        previous_mount_path=self.mount_path_previous
+        if not os.path.exists(previous_mount_path):
+            os.makedirs(previous_mount_path)
+        #TODO ....
+        #挂载 current 版本包
+        if not os.path.exists(self.mount_path_current):
+            os.makedirs(self.mount_path_current)
+        current_mount_path=self.mount_path_current
+        if not os.path.exists(current_mount_path):
+            os.makedirs(current_mount_path)
+        #TODO ....
+        
+        return True
+        
     def _pull_package(self, type, package_path):
         #拉取版本包
         #拉取 previous 版本包

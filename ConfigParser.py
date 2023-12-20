@@ -21,24 +21,42 @@ class ConfigParser:
         #获取当前文件路径
         self.config_path = os.path.dirname(os.path.realpath(__file__)) + "/config.json"
         self.version_dict = {}
-
+        
+    @staticmethod
+    def platform_key():
+        platform=sys.platform
+        if platform == "darwin":
+            return "mac"
+        elif platform == "win32":
+            return "win"
+        else:
+            return "linux"
+        
     def parse(self):
         #读取文件
-        with open(self.config_path, 'r') as f:
+        with open(self.config_path, 'r', -1, "utf-8") as f:
             config_json = json.load(f)
+        #获取当前系统类型
+        system_type = ConfigParser.platform_key()
+        print("system_type: " + system_type)
+        
         #解析文件
         for param in config_json["params"]:
-            type = param["type"]
-            pull_url=""
-            push_url=""
-            if 'pull_url' in param:
-                pull_url = param["pull_url"]
-            if 'push_url' in param:
-                push_url = param["push_url"]
-            version = param["version"]
-            package_name = param["package_name"]
-            node = VersionNode(type, version, pull_url, push_url, package_name)
-            self.version_dict[type] = node
+            if 'platform' in param:
+                if param["platform"] != system_type:
+                    continue
+            for package in param["packages"]:
+                type = package["type"]
+                pull_url=""
+                push_url=""
+                if 'pull_url' in package:
+                    pull_url = package["pull_url"]
+                if 'push_url' in package:
+                    push_url = package["push_url"]
+                version = package["version"]
+                package_name = package["package_name"]
+                node = VersionNode(type, version, pull_url, push_url, package_name)
+                self.version_dict[type] = node
 
     #打印解析结果
     def print(self):
