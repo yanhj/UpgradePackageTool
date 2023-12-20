@@ -55,6 +55,9 @@ class ConfigParser:
                     push_url = package["push_url"]
                 version = package["version"]
                 package_name = package["package_name"]
+                #循环移除尾部的斜杠
+                while push_url.endswith("/"):
+                    push_url = push_url[:-1]
                 node = VersionNode(type, version, pull_url, push_url, package_name)
                 self.version_dict[type] = node
 

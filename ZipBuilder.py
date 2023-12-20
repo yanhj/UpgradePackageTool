@@ -41,7 +41,11 @@ class ZipBuilder:
         #压缩文件夹
         if special_file == "":
             special_file = "."
-        
+            
+        #判断目标文件夹是否存在
+        if not os.path.exists(os.path.dirname(dst_dir)):
+            os.makedirs(os.path.dirname(dst_dir))
+            
         platform=sys.platform
         if platform == "darwin":
             command = "tar -chzf '" + dst_dir + "' -C '" + src_dir + "' " + special_file

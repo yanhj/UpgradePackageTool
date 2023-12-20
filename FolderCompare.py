@@ -138,10 +138,7 @@ if __name__ == '__main__':
     args = sys.argv
     if len(args) != 4:
         print('Usage: python FolderCompare.py oldPath newPath exportPath')
-        #sys.exit(1)
-        args.append('/Users/yanhuajian/WorkSpace/git/UpgradePackageTool/build/mount/previous/vidme/')
-        args.append('/Users/yanhuajian/WorkSpace/git/UpgradePackageTool/build/mount/current/vidme/')
-        args.append('/Users/yanhuajian/WorkSpace/git/UpgradePackageTool/build/diff/')
+        sys.exit(1)
     
     previous_path = args[1]
     current_path = args[2]

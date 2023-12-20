@@ -5,6 +5,8 @@ from FolderCompare import FolderCompare
 from Utils import Utils
 from ZipBuilder import ZipBuilder
 from DmgHelper import DmgHelper
+from publish.SmbService import SmbService
+from publish.SMBUtils import SMBUtils
 
 class builder:
     def __init__(self):
@@ -12,6 +14,7 @@ class builder:
         self.previous=build_path + "previous/"
         self.current=build_path + "current/"
         self.export_path=build_path + "export/"
+        self.export_diff_file=""
         self.package_path=build_path + "package/"
         self.mount_path=build_path + "mount/"
         self.mount_path_previous=self.mount_path + "previous/app"
@@ -142,9 +145,12 @@ class builder:
         if len(lstChild) == 1:
             child_path+=lstChild[0]
         zipBuilder=ZipBuilder(child_path)
-        zipBuilder.compress(os.path.dirname(self.export_path) + "/" + diff_package_name)
+        diff_package_path=os.path.dirname(self.export_path) + "/package/" + diff_package_name
+        if zipBuilder.compress(diff_package_path):
+            self.export_diff_file=diff_package_path
+            return True
         
-        return True
+        return False
 
     @staticmethod
     def remove_invalid_file(file_list):
@@ -154,15 +160,27 @@ class builder:
         
     def upload(self):
         #上传
-        print("TODO: upload")
-        pass
-        return True
+        print("begin upload.....")
+        #判断待上传文件是否存在
+        if not os.path.exists(self.export_diff_file):
+            print("export_diff_file does not exist!")
+            return False
+        
+        server=SmbService()
+        try:
+            pushState = server.push(os.path.dirname(self.export_diff_file), self.configParser.get_param("diff").push_url)
+        except:
+            pushState = False
+            
+        print("end upload.....")
+        
+        return pushState
 
     def clear(self):
         #清理
         #清理 export 文件夹
         if os.path.exists(self.export_path):
-            #shutil.rmtree(self.export_path)
+            shutil.rmtree(self.export_path)
             pass
         #清理 package 文件夹
         if os.path.exists(self.package_path):
