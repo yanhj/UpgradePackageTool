@@ -16,8 +16,10 @@ class ZipBuilder:
             # 已存在先删除目标文件
             os.remove(dst_zip_path)
         if os.path.isfile(self.src_path):
+            print("compress file")
             self._compress_file(self.src_path, dst_zip_path)
         else:
+            print("compress dir")
             self._compress_dir(self.src_path, dst_zip_path)
         return True
     
@@ -48,12 +50,14 @@ class ZipBuilder:
             
         platform=sys.platform
         if platform == "darwin":
-            command = "tar -chzf '" + dst_dir + "' -C '" + src_dir + "' " + special_file
+            command = "ditto -c -k --sequesterRsrc --keepParent '" + src_dir + "/" + special_file + "'" + dst_dir + "' '"
         elif platform == "win32":
             #获取zip.exe文件路径
             zip_path=os.path.dirname(os.path.realpath(__file__)) + "/zip-win/bin/zip.exe"
             #若要压缩文件夹后保持相对路径，需要cd到待压缩文件夹所在目录
             command = zip_path + ' -r "' + dst_dir + '" .'   
+        
+        print(command)
         result = subprocess.run(command, cwd=src_dir, shell=True, check=True, stdout=subprocess.PIPE, text=True)
         
         return result.returncode == 0
@@ -67,7 +71,7 @@ class ZipBuilder:
         # 使用 subprocess.run 执行系统命令
         platform=sys.platform
         if platform == "darwin":
-            command = "tar -xzf '" + self.src_path + "' -C '" + dst_path + "'"
+            command = "ditto -x -k '" + self.src_path + "' -C '" + dst_path + "'"
         elif platform == "win32":
             #获取unzip.exe文件路径
             unzip_path=os.path.dirname(os.path.realpath(__file__)) + "/zip-win/bin/unzip.exe"
