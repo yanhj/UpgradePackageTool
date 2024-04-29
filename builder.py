@@ -36,14 +36,18 @@ class builder:
         previous_package_path=self.package_path + "previous/"
         if not os.path.exists(previous_package_path):
             os.makedirs(previous_package_path)
-        previous_file=self._pull_package("previous", previous_package_path)
+        package_info=self.configParser.get_param()
+        responsitory=package_info.server_url
+        previous_file_url=package_info.get_previous_url()
+        previous_file=self._pull_package(previous_file_url, previous_package_path)
         if previous_file == "":
             return False
         #拉取 current 版本包
         current_package_path=self.package_path + "current/"
         if not os.path.exists(current_package_path):
             os.makedirs(current_package_path)
-        current_file=self._pull_package("current", current_package_path)
+        current_file_url=package_info.get_current_url()
+        current_file=self._pull_package(current_file_url, current_package_path)
         if current_file == "":
             return False
         
@@ -104,18 +108,17 @@ class builder:
         
         return True
         
-    def _pull_package(self, type, package_path):
+    def _pull_package(self, file_url, package_path):
         #拉取版本包
         #拉取 previous 版本包
-        param=self.configParser.get_param(type)
         file_path=""
         #判断是 git 还是共享地址
-        if param.pull_url.startswith("git@"):
+        if file_url.startswith("git@"):
             #拉取 git 包
             pass
         else:
             #拉取共享地址包
-            file_path = Utils.download(param.pull_url, package_path)
+            file_path = Utils.download(file_url, package_path)
 
         return file_path
     
@@ -130,12 +133,15 @@ class builder:
         
         #构建
         folderCompare=FolderCompare(self.mount_path_previous, self.mount_path_current)
+        print("begin FolderCompare.....")
         folderCompare.compare()
         #调用拷贝方法
         diff_path=self.export_path+"diff/"
+        
+        print("begin folderCompare.copyDiff.....")
         folderCompare.copyDiff(diff_path)
         #把 export 文件夹打包成 zip
-        diff_package_name=self.configParser.get_param("diff").package_name
+        diff_package_name=self.configParser.get_param().get_diff_name()
         if not diff_package_name.endswith(".zip"):
             diff_package_name + ".zip"
         #判断下是否只有一个子文件夹，如果只有一个子文件夹，那么把子文件夹的名字作为 zip 的名字
@@ -146,9 +152,14 @@ class builder:
             child_path+=lstChild[0]
         zipBuilder=ZipBuilder(child_path)
         diff_package_path=os.path.dirname(self.export_path) + "/package/" + diff_package_name
+        
+        print("begin zipBuilder.compress.....")
         if zipBuilder.compress(diff_package_path):
             self.export_diff_file=diff_package_path
+            print("zipBuilder.compress.....successed")
             return True
+        
+        print("zipBuilder.compress.....failed!!!")
         
         return False
 
@@ -168,14 +179,25 @@ class builder:
         
         server=SmbService()
         try:
-            pushState = server.push(os.path.dirname(self.export_diff_file), self.configParser.get_param("diff").push_url)
+            remote_dir_url=self.configParser.get_param().get_diff_dir_url()
+            #移除以 http://share.mtlab.meitu.com/share/MCP-beta 开始的字符串
+            remote_dir_url=remote_dir_url.replace("http://share.mtlab.meitu.com/share/MCP-beta", "")
+            pushState = server.push(os.path.dirname(self.export_diff_file), remote_dir_url)
         except:
             pushState = False
             
         print("end upload.....")
         
         return pushState
-
+    
+    def unmount(self):
+        #卸载 previous dmg 文件
+        if self.previousDmgHelper != None:
+            self.previousDmgHelper.unmount()
+        #卸载 current dmg 文件
+        if self.currentDmgHelper != None:
+            self.currentDmgHelper.unmount()
+            
     def clear(self):
         #清理
         #清理 package 文件夹
@@ -190,12 +212,8 @@ class builder:
         #清理 current 文件夹
         if os.path.exists(self.current):
             shutil.rmtree(self.current)
-        #卸载 previous dmg 文件
-        if self.previousDmgHelper != None:
-            self.previousDmgHelper.unmount()
-        #卸载 current dmg 文件
-        if self.currentDmgHelper != None:
-            self.currentDmgHelper.unmount()
+        #卸载 dmg
+        self.unmount()
             
         #清理 mount 文件夹
         if os.path.exists(self.mount_path):
@@ -216,4 +234,7 @@ if __name__ == '__main__':
     if not builder.upload():
         builder.clear()
         exit(1)
+            
     builder.clear()
+        
+    

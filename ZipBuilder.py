@@ -50,7 +50,8 @@ class ZipBuilder:
             
         platform=sys.platform
         if platform == "darwin":
-            command = "ditto -c -k --sequesterRsrc --keepParent '" + src_dir + "/" + special_file + "'" + dst_dir + "' '"
+            src_dir_path=src_dir + "/" + special_file
+            command = "ditto -c -k --sequesterRsrc --keepParent '" + src_dir_path + "' '" + dst_dir + "'"
         elif platform == "win32":
             #获取zip.exe文件路径
             zip_path=os.path.dirname(os.path.realpath(__file__)) + "/zip-win/bin/zip.exe"
