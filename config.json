@@ -11,8 +11,8 @@
         {
             "platform": "win",
             "server_url": "http://share.mtlab.meitu.com/share/MCP-beta/vidme-release/",
-            "previous_version": "1.1.1/Beta/21",
-            "current_version": "1.1.1/Beta/22",
+            "previous_version": "1.1.2/Beta/2",
+            "current_version": "1.1.2/Beta/3",
             "package_name": "VidMeCreator.zip"
         }
     ]
